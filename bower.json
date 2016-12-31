@@ -1,0 +1,23 @@
+{
+  "name": "purescript-ffi-utils",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-console": "^2.0.0",
+    "purescript-maybe": "^2.0.0",
+    "purescript-exceptions": "^2.0.0",
+    "purescript-aff": "^2.0.2",
+    "purescript-eff-functions": "^2.0.0",
+    "purescript-eff": "^2.0.0",
+    "purescript-functions": "^2.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^2.0.0",
+    "purescript-coroutines": "^3.1.0",
+    "purescript-aff-coroutines": "^4.0.0"
+  }
+}

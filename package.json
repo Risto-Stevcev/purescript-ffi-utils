@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "clean": "rimraf output && rimraf .pulp-cache",
+    "build": "pulp build -- --censor-lib --strict --stash",
+    "test": "pulp build -I test -- --censor-lib --stash && pulp test",
+    "test-strict": "pulp build -I test -- --censor-lib --strict --stash && pulp test"
+  },
+  "devDependencies": {
+    "purescript-psa": "^0.4.0",
+    "rimraf": "^2.5.0"
+  }
+}
