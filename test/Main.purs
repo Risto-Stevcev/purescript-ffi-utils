@@ -68,10 +68,10 @@ config2 = { foo: "bar", bar: { baz: Just 3, qux: true } }
 data StreamEvent = Readable | Data | End
 
 streamProducer :: forall e. Stream -> Producer StreamEvent (Aff (avar :: AVAR | e)) Unit
-streamProducer zz = produce \emit -> do
-  listenToEff0 zz "on" "readable" \_ -> emit (Left Readable)
-  listenToEff0 zz "on" "data"     \_ -> emit (Left Data)
-  listenToEff0 zz "on" "end"      \_ -> do
+streamProducer stream = produce \emit -> do
+  listenToEff0 stream "on" "readable" \_ -> emit (Left Readable)
+  listenToEff0 stream "on" "data"     \_ -> emit (Left Data)
+  listenToEff0 stream "on" "end"      \_ -> do
     emit (Left End)
     emit (Right unit)
 
