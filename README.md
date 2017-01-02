@@ -2,6 +2,10 @@
 
 A utility library for the purescript foreign function interface
 
+This library is primarily intended to alleviate the unique challenge of javascript to purescript translation (and 
+vice versa). Thus it is intended only for purescript's default javascript backend, and there are currently no 
+intentions to support alternate backends.
+
 
 ## Accessing a module
 
