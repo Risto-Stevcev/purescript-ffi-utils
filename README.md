@@ -122,4 +122,4 @@ an example on how to use them.
 There are other useful libraries for working with the FFI that complement this one, such as:
 
 puescript-foreign, purescript-nullable, purescript-undefinable, purescript-aff, purescript-coroutines, 
-purescript-aff-coroutines, purescript-argonaut, purescript-generics, etc.
+purescript-aff-coroutines, purescript-functions, purescript-eff-functions, purescript-argonaut, purescript-generics, etc.
