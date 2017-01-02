@@ -2,6 +2,15 @@
 
 var Maybe = require('Data.Maybe');
 
+exports.mkError = function(e) {
+  if (e instanceof Error) {
+    return new Maybe.Just(e);
+  }
+  else {
+    return new Maybe.Nothing();
+  }
+}
+
 exports.apply = function(fn) {
   return function(args) {
     return fn.apply(null, args);

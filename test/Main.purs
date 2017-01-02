@@ -1,9 +1,11 @@
 module Test.Main where
 
-import Prelude (Unit, bind, ($), (>>=), pure, unit, const)
+import Prelude (Unit, class Show, show, bind, ($), (#), (<$>), (>>=), (==), (<>), pure, unit, const)
+import Control.Alt ((<|>))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Except (runExcept)
 import Control.Monad.Aff (Aff, launchAff, liftEff', Canceler)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Aff.Console (log) as AffLog
@@ -11,11 +13,14 @@ import Control.Monad.Rec.Class (forever)
 import Control.Monad.Trans.Class (lift)
 import Control.Coroutine (Consumer, Producer, Process, ($$), runProcess, await)
 import Control.Coroutine.Aff (produce)
-import FFI.Util (parseOptions, require, stringify)
+import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property', property, setProperty, global)
 import FFI.Util.Log (logAny)
+import FFI.Util.Class (class Taggable, class Untaggable, untag, tag)
 import FFI.Util.Function (call0, call1, callAff2r1, listenToEff0)
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..), either)
+import Data.Foreign (F, toForeign, unsafeFromForeign)
+import Data.Foreign.Class (class IsForeign, read)
 
 
 -- | Define some data types for the FFI libraries
@@ -51,11 +56,38 @@ createReadStream :: forall e. String -> Eff (err :: EXCEPTION, fs :: FS | e) Str
 createReadStream file = pure $ call1 fs "createReadStream" file
 
 
+-- | Signatures in JS are often untagged sums. Here are some helper classes to both tag and untag tagged sums
+-- | in Purescript for use with the FFI
+data Primitive = S String | N Number | B Boolean
+
+instance tagPrimitive :: Taggable Primitive where
+  tag a | typeof a == "string"  = S (unsafeFromForeign a)
+        | typeof a == "number"  = N (unsafeFromForeign a)
+        | typeof a == "boolean" = B (unsafeFromForeign a)
+  tag _ = S ""
+
+instance untagPrimitive :: Untaggable Primitive where
+  untag (S a) = toForeign a
+  untag (N a) = toForeign a
+  untag (B a) = toForeign a
+
+instance isForeignFoo :: IsForeign Primitive where
+  read value = do
+    let string = S <$> (read value :: F String)
+    let num    = N <$> (read value :: F Number)
+    let bool   = B <$> (read value :: F Boolean)
+    string <|> num <|> bool
+
+instance showPrimitive :: Show Primitive where
+  show (S a) = "S " <> (show a)
+  show (N a) = "N " <> (show a)
+  show (B a) = "B " <> (show a)
+
 
 -- | We can have objects that use Maybe types to convey optional values
 type SomeConfigObject = { foo :: String, bar :: { baz :: Maybe Int, qux :: Boolean } }
 
-config1 :: SomeConfigObject 
+config1 :: SomeConfigObject
 config1 = { foo: "bar", bar: { baz: Nothing, qux: true } }
 
 
@@ -95,7 +127,23 @@ main = do
   log $ stringify false $ parseOptions config1  -- {"foo":"bar","bar":{"qux":true}}
   log $ stringify false $ parseOptions config2  -- {"foo":"bar","bar":{"baz":3,"qux":true}}
 
+  -- | Show the result of untagging a tagged sum using Taggable, Untaggable and IsForeign
+  let pi = N 3.1415
+  log $ show pi      -- N 3.1415
+  logAny $ untag pi  -- 3.1415
+  log $ show $ (untag pi # tag) :: Primitive  -- N 3.1415
+  log $ show $ runExcept $ (untag pi # read) :: F Primitive  -- (Right N 3.1415)
+
+  -- | Setting a property
+  pure $ setProperty global "foo" "bar"
+  log $ (property global "foo") :: String  -- bar
+
+  -- | Checking a type
+  log $ show $ [1,2,3] `instanceof` (property' "Array")
+
+  -- | Demonstrates toBuffer and toString
   toBuffer "foobar" >>= \buf -> do
+    log $ show $ buf `instanceof` (property buffer "Buffer")  -- true
     logAny buf            -- <Buffer 66 6f 6f 62 61 72>
     buf' <- toString buf  -- foobar
     log buf'

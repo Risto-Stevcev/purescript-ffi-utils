@@ -13,7 +13,8 @@
     "purescript-aff": "^2.0.2",
     "purescript-eff-functions": "^2.0.0",
     "purescript-eff": "^2.0.0",
-    "purescript-functions": "^2.0.0"
+    "purescript-functions": "^2.0.0",
+    "purescript-foreign": "^3.0.1"
   },
   "devDependencies": {
     "purescript-psci-support": "^2.0.0",
