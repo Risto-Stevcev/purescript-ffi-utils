@@ -46,9 +46,8 @@ toBuffer :: String -> Buffer
 toBuffer s = call1 buffer "Buffer" s
 ```
 
-However there is an issue with this signature for `toBuffer`. Buffers in JS are mutable, so it makes sense to wrap 
-it in `Eff` since they can be side effecting. This is as simple as changing the type signature to `Eff` and calling 
-`pure` on the result:
+However there is an issue with this signature for `toBuffer`. Buffers in JS are mutable, so it should be an effectful 
+function. You can write effectful functions using callEff:
 
 ```purescript
 toBuffer :: forall e. String -> Eff (err :: EXCEPTION, buffer :: BUFFER | e) Buffer

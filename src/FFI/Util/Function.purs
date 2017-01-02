@@ -420,48 +420,48 @@ callAff4r4' o m a1 a2 a3 a4 = makeAff $ \error success ->
 
 
 listen0 :: forall o e. o -> Method -> (Unit -> Unit) -> Eff e Unit
-listen0 o m g = pure $ call1 o m (mkFn0 g)
+listen0 o m g = callEff1 o m (mkFn0 g)
 
 listen1 :: forall o e a1. o -> Method -> (a1 -> Unit) -> Eff e Unit
-listen1 o m g = pure $ call1 o m (mkFn1 g)
+listen1 o m g = callEff1 o m (mkFn1 g)
 
 listen2 :: forall o e a1 a2. o -> Method -> (a1 -> a2 -> Unit) -> Eff e Unit
-listen2 o m g = pure $ call1 o m (mkFn2 g)
+listen2 o m g = callEff1 o m (mkFn2 g)
 
 listen3 :: forall o e a1 a2 a3. o -> Method -> (a1 -> a2 -> a3 -> Unit) -> Eff e Unit
-listen3 o m g = pure $ call1 o m (mkFn3 g)
+listen3 o m g = callEff1 o m (mkFn3 g)
 
 listen4 :: forall o e a1 a2 a3 a4. o -> Method -> (a1 -> a2 -> a3 -> a4 -> Unit) -> Eff e Unit
-listen4 o m g = pure $ call1 o m (mkFn4 g)
+listen4 o m g = callEff1 o m (mkFn4 g)
 
 
 listenTo0 :: forall o e. o -> Method -> Event -> (Unit -> Unit) -> Eff e Unit
-listenTo0 o m e g = pure $ call2 o m e (mkFn0 g)
+listenTo0 o m e g = callEff2 o m e (mkFn0 g)
 
 listenTo1 :: forall o e a1. o -> Method -> Event -> (a1 -> Unit) -> Eff e Unit
-listenTo1 o m e g = pure $ call2 o m e (mkFn1 g)
+listenTo1 o m e g = callEff2 o m e (mkFn1 g)
 
 listenTo2 :: forall o e a1 a2. o -> Method -> Event -> (a1 -> a2 -> Unit) -> Eff e Unit
-listenTo2 o m e g = pure $ call2 o m e (mkFn2 g)
+listenTo2 o m e g = callEff2 o m e (mkFn2 g)
 
 listenTo3 :: forall o e a1 a2 a3. o -> Method -> Event -> (a1 -> a2 -> a3 -> Unit) -> Eff e Unit
-listenTo3 o m e g = pure $ call2 o m e (mkFn3 g)
+listenTo3 o m e g = callEff2 o m e (mkFn3 g)
 
 listenTo4 :: forall o e a1 a2 a3 a4. o -> Method -> Event -> (a1 -> a2 -> a3 -> a4 -> Unit) -> Eff e Unit
-listenTo4 o m e g = pure $ call2 o m e (mkFn4 g)
+listenTo4 o m e g = callEff2 o m e (mkFn4 g)
 
 
 listenToEff0 :: forall o e. o -> Method -> Event -> (Unit -> Eff e Unit) -> Eff e Unit
-listenToEff0 o m e g = pure $ call2 o m e (mkEffFn1 g)
+listenToEff0 o m e g = callEff2 o m e (mkEffFn1 g)
 
 listenToEff1 :: forall o e a1. o -> Method -> Event -> (a1 -> Eff e Unit) -> Eff e Unit
-listenToEff1 o m e g = pure $ call2 o m e (mkEffFn1 g)
+listenToEff1 o m e g = callEff2 o m e (mkEffFn1 g)
 
 listenToEff2 :: forall o e a1 a2. o -> Method -> Event -> (a1 -> a2 -> Eff e Unit) -> Eff e Unit
-listenToEff2 o m e g = pure $ call2 o m e (mkEffFn2 g)
+listenToEff2 o m e g = callEff2 o m e (mkEffFn2 g)
 
 listenToEff3 :: forall o e a1 a2 a3. o -> Method -> Event -> (a1 -> a2 -> a3 -> Eff e Unit) -> Eff e Unit
-listenToEff3 o m e g = pure $ call2 o m e (mkEffFn3 g)
+listenToEff3 o m e g = callEff2 o m e (mkEffFn3 g)
 
 listenToEff4 :: forall o e a1 a2 a3 a4. o -> Method -> Event -> (a1 -> a2 -> a3 -> a4 -> Eff e Unit) -> Eff e Unit
-listenToEff4 o m e g = pure $ call2 o m e (mkEffFn4 g)
+listenToEff4 o m e g = callEff2 o m e (mkEffFn4 g)
