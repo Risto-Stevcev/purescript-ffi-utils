@@ -81,3 +81,13 @@ exports._call7 = function(obj, method, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
                     , arg7 instanceof Maybe.Just ? arg7.value0 : arg7 instanceof Maybe.Nothing ? null : arg7
                     );
 };
+
+
+exports._callEff0 = exports._call0;
+exports._callEff1 = exports._call1;
+exports._callEff2 = exports._call2;
+exports._callEff3 = exports._call3;
+exports._callEff4 = exports._call4;
+exports._callEff5 = exports._call5;
+exports._callEff6 = exports._call6;
+exports._callEff7 = exports._call7;

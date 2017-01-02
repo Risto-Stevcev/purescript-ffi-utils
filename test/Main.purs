@@ -16,7 +16,7 @@ import Control.Coroutine.Aff (produce)
 import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property', property, setProperty, global)
 import FFI.Util.Log (logAny)
 import FFI.Util.Class (class Taggable, class Untaggable, untag, tag)
-import FFI.Util.Function (call0, call1, callAff2r1, listenToEff0)
+import FFI.Util.Function (callEff0, callEff1, callAff2r1, listenToEff0)
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..), either)
 import Data.Foreign (F, toForeign, unsafeFromForeign)
@@ -43,17 +43,17 @@ buffer = require "buffer"
 -- | It becomes easy to convert a JS function into a PS one
 -- | From the 'buffer' module:
 toBuffer :: forall e. String -> Eff (err :: EXCEPTION, buffer :: BUFFER | e) Buffer
-toBuffer s = pure $ call1 buffer "Buffer" s
+toBuffer s = callEff1 buffer "Buffer" s
 
 toString :: forall e. Buffer -> Eff (err :: EXCEPTION, buffer :: BUFFER | e) String
-toString b = pure $ call0 b "toString"
+toString b = callEff0 b "toString"
 
 -- | From the 'fs' module:
 readFile :: forall e. String -> Aff (fs :: FS | e) String
 readFile file = callAff2r1 fs "readFile" file "utf8"
 
 createReadStream :: forall e. String -> Eff (err :: EXCEPTION, fs :: FS | e) Stream
-createReadStream file = pure $ call1 fs "createReadStream" file
+createReadStream file = callEff1 fs "createReadStream" file
 
 
 -- | Signatures in JS are often untagged sums. Here are some helper classes to both tag and untag tagged sums

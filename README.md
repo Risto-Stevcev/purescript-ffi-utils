@@ -52,7 +52,7 @@ it in `Eff` since they can be side effecting. This is as simple as changing the 
 
 ```purescript
 toBuffer :: forall e. String -> Eff (err :: EXCEPTION, buffer :: BUFFER | e) Buffer
-toBuffer s = pure $ call1 buffer "Buffer" s
+toBuffer s = callEff1 buffer "Buffer" s
 ```
 
 

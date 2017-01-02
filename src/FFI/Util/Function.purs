@@ -11,6 +11,15 @@ module FFI.Util.Function
   , call6
   , call7
 
+  , callEff0
+  , callEff1
+  , callEff2
+  , callEff3
+  , callEff4
+  , callEff5
+  , callEff6
+  , callEff7
+
   , callAff0r1
   , callAff0r1'
   , callAff1r1
@@ -81,7 +90,10 @@ import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Aff (Aff, makeAff)
 import Data.Maybe (Maybe, maybe)
-import Data.Function.Eff (mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4)
+import Data.Function.Eff ( EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9
+                         , runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9
+                         , mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4
+                         )
 import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9
                                , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9
                                , mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5 )
@@ -129,6 +141,42 @@ call6 = runFn8 _call6
 
 call7 :: forall o a1 a2 a3 a4 a5 a6 a7 b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> b
 call7 = runFn9 _call7
+
+
+
+foreign import _callEff0 :: forall eff o b. EffFn2 eff o Method b
+foreign import _callEff1 :: forall eff o a1 b. EffFn3 eff o Method a1 b
+foreign import _callEff2 :: forall eff o a1 a2 b. EffFn4 eff o Method a1 a2 b
+foreign import _callEff3 :: forall eff o a1 a2 a3 b. EffFn5 eff o Method a1 a2 a3 b
+foreign import _callEff4 :: forall eff o a1 a2 a3 a4 b. EffFn6 eff o Method a1 a2 a3 a4 b
+foreign import _callEff5 :: forall eff o a1 a2 a3 a4 a5 b. EffFn7 eff o Method a1 a2 a3 a4 a5 b
+foreign import _callEff6 :: forall eff o a1 a2 a3 a4 a5 a6 b. EffFn8 eff o Method a1 a2 a3 a4 a5 a6 b
+foreign import _callEff7 :: forall eff o a1 a2 a3 a4 a5 a6 a7 b. EffFn9 eff o Method a1 a2 a3 a4 a5 a6 a7 b
+
+callEff0 :: forall o eff b. o -> Method -> Eff eff b
+callEff0 = runEffFn2 _callEff0
+
+callEff1 :: forall o a1 eff b. o -> Method -> a1 -> Eff eff b
+callEff1 = runEffFn3 _callEff1
+
+callEff2 :: forall o a1 a2 eff b. o -> Method -> a1 -> a2 -> Eff eff b
+callEff2 = runEffFn4 _callEff2
+
+callEff3 :: forall o a1 a2 a3 eff b. o -> Method -> a1 -> a2 -> a3 -> Eff eff b
+callEff3 = runEffFn5 _callEff3
+
+callEff4 :: forall o a1 a2 a3 a4 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> Eff eff b
+callEff4 = runEffFn6 _callEff4
+
+callEff5 :: forall o a1 a2 a3 a4 a5 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> Eff eff b
+callEff5 = runEffFn7 _callEff5
+
+callEff6 :: forall o a1 a2 a3 a4 a5 a6 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> Eff eff b
+callEff6 = runEffFn8 _callEff6
+
+callEff7 :: forall o a1 a2 a3 a4 a5 a6 a7 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> Eff eff b
+callEff7 = runEffFn9 _callEff7
+
 
 
 callAff0r1 :: forall o b c. o -> Method -> Aff b c
