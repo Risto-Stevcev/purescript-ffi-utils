@@ -1,7 +1,5 @@
 'use strict';
 
-var Maybe = require('Data.Maybe');
-
 exports['typeof'] = function(a) {
   return typeof a;
 }
@@ -27,17 +25,19 @@ exports['require'] = function(moduleName) {
   return require(moduleName);
 }
 
-exports.parseOptions = function parseOptional(object) {
+exports._parseOptions = function parseOptional(justValue, nothingValue, object) {
   var acc = {};
 
   for (var key in object) {
     var value = object[key];
 
     if (value.constructor === Object) {
-      acc[key] = parseOptional(value);
+      acc[key] = parseOptional(justValue, nothingValue, value);
     }
     else {
-      acc[key] = value instanceof Maybe.Just ? value.value0 : value instanceof Maybe.Nothing ? null : value;
+      acc[key] = value.constructor === justValue.constructor
+               ? value.value0
+               : value.constructor === nothingValue.constructor ? null : value;
     }
   }
 

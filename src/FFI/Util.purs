@@ -34,7 +34,8 @@ module FFI.Util
   , Global
   ) where
 
-import Prelude (Unit)
+import Prelude (pure, unit, Unit)
+import Data.Maybe (Maybe(Nothing))
 import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8
                                , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8 )
 import Data.Function.Eff ( EffFn1, EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8
@@ -49,7 +50,10 @@ foreign import stringify :: forall r. Boolean -> { | r } -> String
 
 foreign import require :: forall a. String -> a
 
-foreign import parseOptions :: forall r1 r2. { | r1 } -> { | r2 }
+foreign import _parseOptions :: forall a r1 r2. Fn3 (Maybe a) (Maybe a) { | r1 } { | r2 }
+
+parseOptions :: forall r1 r2. { | r1 } -> { | r2 }
+parseOptions = runFn3 _parseOptions (pure unit) Nothing
 
 foreign import isNullOrUndefined :: forall a. a -> Boolean
 

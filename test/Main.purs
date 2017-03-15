@@ -124,7 +124,7 @@ main :: forall e
       . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION | e)
         (Canceler (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER | e))
 main = do
-  log $ stringify false $ parseOptions config1  -- {"foo":"bar","bar":{"qux":true}}
+  log $ stringify false $ parseOptions config1  -- {"foo":"bar","bar":{"baz":null,"qux":true}}
   log $ stringify false $ parseOptions config2  -- {"foo":"bar","bar":{"baz":3,"qux":true}}
 
   -- | Show the result of untagging a tagged sum using Taggable, Untaggable and IsForeign
