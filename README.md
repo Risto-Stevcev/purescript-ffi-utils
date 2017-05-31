@@ -1,5 +1,8 @@
 # purescript-ffi-utils
 
+[![Latest release](http://img.shields.io/bower/v/purescript-ffi-utils.svg)](https://github.com/Risto-Stevcev/purescript-ffi-utils/releases)
+[![Pursuit](http://pursuit.purescript.org/packages/purescript-ffi-utils/badge)](https://pursuit.purescript.org/packages/purescript-ffi-utils)
+
 A utility library for the purescript foreign function interface
 
 This library is primarily intended to alleviate the unique challenge of javascript to purescript translation (and 
@@ -126,3 +129,10 @@ There are other useful libraries for working with the FFI that complement this o
 
 puescript-foreign, purescript-nullable, purescript-undefinable, purescript-aff, purescript-coroutines, 
 purescript-aff-coroutines, purescript-functions, purescript-eff-functions, purescript-argonaut, purescript-generics, etc.
+
+## Roadmap
+
+- The current plan is to convert this library into a meta-package, and to have all the utilities in separate libraries
+- With purescript > v0.11 row constraints, it's now possible to rewrite some of the functions in a more robust way
+- A longer description of how to use all of the utilities, pros/cons, etc
+- Resurrecting easy-ffi
