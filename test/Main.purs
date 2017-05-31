@@ -1,8 +1,8 @@
 module Test.Main where
 
-import Prelude (Unit, class Show, show, bind, ($), (#), (<$>), (>>=), (==), (<>), pure, unit, const)
+import Prelude (Unit, class Show, show, bind, discard, ($), (#), (<$>), (>>=), (==), (<>), pure, unit, const)
 import Control.Alt ((<|>))
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, kind Effect)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Except (runExcept)
@@ -20,17 +20,17 @@ import FFI.Util.Function (callEff0, callEff1, callAff2r1, listenToEff0)
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..), either)
 import Data.Foreign (F, toForeign, unsafeFromForeign)
-import Data.Foreign.Class (class IsForeign, read)
+import Data.Foreign.Class (class Decode, decode)
 
 
 -- | Define some data types for the FFI libraries
-foreign import data FileSystemM :: *
-foreign import data Stream :: *
-foreign import data FS :: !   -- To keep track of file system side effects
+foreign import data FileSystemM :: Type
+foreign import data Stream :: Type
+foreign import data FS :: Effect   -- To keep track of file system side effects
 
-foreign import data BufferM :: *
-foreign import data Buffer :: *
-foreign import data BUFFER :: !  -- To keep track of buffer side effects
+foreign import data BufferM :: Type
+foreign import data Buffer :: Type
+foreign import data BUFFER :: Effect  -- To keep track of buffer side effects
 
 -- | We can require() modules directly and easily
 -- | As a convention, module data types are suffixed with M
@@ -71,11 +71,11 @@ instance untagPrimitive :: Untaggable Primitive where
   untag (N a) = toForeign a
   untag (B a) = toForeign a
 
-instance isForeignFoo :: IsForeign Primitive where
-  read value = do
-    let string = S <$> (read value :: F String)
-    let num    = N <$> (read value :: F Number)
-    let bool   = B <$> (read value :: F Boolean)
+instance isForeignFoo :: Decode Primitive where
+  decode value = do
+    let string = S <$> (decode value :: F String)
+    let num    = N <$> (decode value :: F Number)
+    let bool   = B <$> (decode value :: F Boolean)
     string <|> num <|> bool
 
 instance showPrimitive :: Show Primitive where
@@ -121,18 +121,18 @@ streamProcess stream = (streamProducer stream) $$ (streamConsumer)
 
 
 main :: forall e
-      . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION | e)
-        (Canceler (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER | e))
+      . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION, exception :: EXCEPTION | e)
+        (Canceler (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION | e))
 main = do
   log $ stringify false $ parseOptions config1  -- {"foo":"bar","bar":{"baz":null,"qux":true}}
   log $ stringify false $ parseOptions config2  -- {"foo":"bar","bar":{"baz":3,"qux":true}}
 
-  -- | Show the result of untagging a tagged sum using Taggable, Untaggable and IsForeign
+  -- | Show the result of untagging a tagged sum using Taggable, Untaggable and Decode
   let pi = N 3.1415
   log $ show pi      -- N 3.1415
   logAny $ untag pi  -- 3.1415
   log $ show $ (untag pi # tag) :: Primitive  -- N 3.1415
-  log $ show $ runExcept $ (untag pi # read) :: F Primitive  -- (Right N 3.1415)
+  log $ show $ runExcept $ (untag pi # decode) :: F Primitive  -- (Right N 3.1415)
 
   -- | Setting a property
   pure $ setProperty global "foo" "bar"
@@ -149,7 +149,7 @@ main = do
     log buf'
 
   -- | Launch the stream coroutine
-  launchAff $ do
+  _ <- launchAff $ do
     stream <- liftEff' $ createReadStream "/home/pureuser/src/bower.json"
     either (const $ pure unit) (\s -> runProcess (streamProcess s)) stream
 

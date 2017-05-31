@@ -38,8 +38,8 @@ import Prelude (pure, unit, Unit)
 import Data.Maybe (Maybe(Nothing))
 import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8
                                , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8 )
-import Data.Function.Eff ( EffFn1, EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8
-                         , runEffFn1, runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8 )
+import Control.Monad.Eff.Uncurried ( EffFn1, EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8
+                                   , runEffFn1, runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8 )
 import Control.Monad.Eff (Eff)
 
 foreign import typeof :: forall a. a -> String
@@ -75,9 +75,9 @@ foreign import window :: Unit -> Window
 
 foreign import global :: Unit -> Global
 
-foreign import data Window :: *
+foreign import data Window :: Type
 
-foreign import data Global :: *
+foreign import data Global :: Type
 
 foreign import new :: forall a b. a -> b
 

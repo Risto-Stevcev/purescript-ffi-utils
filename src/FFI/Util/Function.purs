@@ -90,10 +90,10 @@ import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Aff (Aff, makeAff)
 import Data.Maybe (Maybe, maybe)
-import Data.Function.Eff ( EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9
-                         , runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9
-                         , mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4
-                         )
+import Control.Monad.Eff.Uncurried ( EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9
+                                   , runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9
+                                   , mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4
+                                   )
 import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9
                                , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9
                                , mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5 )
