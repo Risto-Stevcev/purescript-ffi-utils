@@ -13,7 +13,7 @@ import Control.Monad.Rec.Class (forever)
 import Control.Monad.Trans.Class (lift)
 import Control.Coroutine (Consumer, Producer, Process, ($$), runProcess, await)
 import Control.Coroutine.Aff (produce)
-import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property', property, setProperty, global)
+import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property', property, propertyPath, setProperty, global)
 import FFI.Util.Log (logAny)
 import FFI.Util.Class (class Taggable, class Untaggable, untag, tag)
 import FFI.Util.Function (callEff0, callEff1, callAff2r1, listenToEff0)
@@ -137,6 +137,9 @@ main = do
   -- | Setting a property
   pure $ setProperty global "foo" "bar"
   log $ (property global "foo") :: String  -- bar
+
+  -- | Showing a property by path (should print "3")
+  log $ propertyPath {x: {y: {z: 3}}} ["x", "y", "z"]
 
   -- | Checking a type
   log $ show $ [1,2,3] `instanceof` (property' "Array")

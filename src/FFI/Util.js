@@ -61,7 +61,7 @@ exports.property = function(object) {
 
 exports.propertyPath = function(object) {
   return function(paths) {
-    for (var i; i < paths.length; i++) {
+    for (var i = 0; i < paths.length; i++) {
       object = object[paths[i]];
     };
     return object;
@@ -85,7 +85,7 @@ exports["propertyPath'"] = function(paths) {
     var object = global;
   }
 
-  for (var i; i < paths.length; i++) {
+  for (var i = 0; i < paths.length; i++) {
     object = object[paths[i]];
   };
 
@@ -104,7 +104,7 @@ exports.setProperty = function(object) {
 exports.setPropertyPath = function(object) {
   return function(paths) {
     return function(value) {
-      for (var i; i < paths.length; i++) {
+      for (var i = 0; i < paths.length; i++) {
         if (i < paths.length - 1) {
           object = object[paths[i]];
         }
