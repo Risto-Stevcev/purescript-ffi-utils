@@ -83,20 +83,17 @@ module FFI.Util.Function
   , listenToEff4
   ) where
 
-import Prelude (($), Unit, pure)
-import FFI.Util (isNullOrUndefined)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Unsafe (unsafePerformEff)
-import Control.Monad.Eff.Exception (Error)
+import Control.Category ((<<<))
 import Control.Monad.Aff (Aff, makeAff)
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Exception (Error)
+import Control.Monad.Eff.Uncurried (EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9, runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9, mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4)
+import Control.Monad.Eff.Unsafe (unsafePerformEff)
+import Data.Either (Either(..))
+import Data.Function.Uncurried (Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9, runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9, mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5)
 import Data.Maybe (Maybe, maybe)
-import Control.Monad.Eff.Uncurried ( EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9
-                                   , runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9
-                                   , mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4
-                                   )
-import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9
-                               , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9
-                               , mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5 )
+import FFI.Util (isNullOrUndefined)
+import Prelude (($), Unit, pure)
 
 
 type Method = String
@@ -180,241 +177,356 @@ callEff7 = runEffFn9 _callEff7
 
 
 callAff0r1 :: forall o b c. o -> Method -> Aff b c
-callAff0r1 o m = makeAff $ \error success ->
+callAff0r1 o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn2 \err res ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success res else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right res)
+      else (cb $ Left err)
 
 callAff1r1 :: forall o a1 b c. o -> Method -> a1 -> Aff b c
-callAff1r1 o m a1 = makeAff $ \error success ->
+callAff1r1 o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn2 \err res ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success res else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right res)
+      else (cb $ Left err)
 
 callAff2r1 :: forall o a1 a2 b c. o -> Method -> a1 -> a2 -> Aff b c
-callAff2r1 o m a1 a2 = makeAff $ \error success ->
+callAff2r1 o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn2 \err res ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success res else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right res)
+      else (cb $ Left err)
 
 callAff3r1 :: forall o a1 a2 a3 b c. o -> Method -> a1 -> a2 -> a3 -> Aff b c
-callAff3r1 o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r1 o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn2 \err res ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success res else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right res)
+      else (cb $ Left err)
 
 callAff4r1 :: forall o a1 a2 a3 a4 b c. o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b c
-callAff4r1 o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r1 o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn2 \err res ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success res else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right res)
+      else (cb $ Left err)
 
 
 callAff0r2 :: forall o b r1 r2. o -> Method -> Aff b {res1 :: r1, res2 :: r2}
-callAff0r2 o m = makeAff $ \error success ->
+callAff0r2 o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn3 \err res1 res2 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2})
+      else (cb $ Left err)
 
 callAff1r2 :: forall o a1 b r1 r2. o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2}
-callAff1r2 o m a1 = makeAff $ \error success ->
+callAff1r2 o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn3 \err res1 res2 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2})
+      else (cb $ Left err)
 
 callAff2r2 :: forall o a1 a2 b r1 r2. o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2}
-callAff2r2 o m a1 a2 = makeAff $ \error success ->
+callAff2r2 o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn3 \err res1 res2 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2})
+      else (cb $ Left err)
 
 callAff3r2 :: forall o a1 a2 a3 b r1 r2. o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2}
-callAff3r2 o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r2 o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn3 \err res1 res2 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2})
+      else (cb $ Left err)
 
 callAff4r2 :: forall o a1 a2 a3 a4 b r1 r2. o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2}
-callAff4r2 o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r2 o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn3 \err res1 res2 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2})
+      else (cb $ Left err)
 
 
 callAff0r3 :: forall o b r1 r2 r3
             . o -> Method -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff0r3 o m = makeAff $ \error success ->
+callAff0r3 o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn4 \err res1 res2 res3 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2, res3: res3})
+      else (cb $ Left err)
 
 callAff1r3 :: forall o a1 b r1 r2 r3
             . o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff1r3 o m a1 = makeAff $ \error success ->
+callAff1r3 o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn4 \err res1 res2 res3 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2, res3: res3})
+      else (cb $ Left err)
 
 callAff2r3 :: forall o a1 a2 b r1 r2 r3
             . o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff2r3 o m a1 a2 = makeAff $ \error success ->
+callAff2r3 o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn4 \err res1 res2 res3 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2, res3: res3})
+      else (cb $ Left err)
 
 callAff3r3 :: forall o a1 a2 a3 b r1 r2 r3
             . o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff3r3 o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r3 o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn4 \err res1 res2 res3 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2, res3: res3})
+      else (cb $ Left err)
 
 callAff4r3 :: forall o a1 a2 a3 a4 b r1 r2 r3
             . o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff4r3 o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r3 o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn4 \err res1 res2 res3 ->
-    unsafePerformEff $ if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3} else error err
+    unsafePerformEff $
+      if (isNullOrUndefined err)
+      then (cb $ Right {res1: res1, res2: res2, res3: res3})
+      else (cb $ Left err)
 
 
 callAff0r4 :: forall o b r1 r2 r3 r4
             . o -> Method -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff0r4 o m = makeAff $ \error success ->
+callAff0r4 o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn5 \err res1 res2 res3 res4 -> unsafePerformEff $
-    if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3, res4: res4} else error err
+    if (isNullOrUndefined err)
+    then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+    else (cb $ Left err)
 
 
 callAff1r4 :: forall o a1 b r1 r2 r3 r4
             . o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff1r4 o m a1 = makeAff $ \error success ->
+callAff1r4 o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn5 \err res1 res2 res3 res4 -> unsafePerformEff $
-    if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3, res4: res4} else error err
+    if (isNullOrUndefined err)
+    then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+    else (cb $ Left err)
 
 
 callAff2r4 :: forall o a1 a2 b r1 r2 r3 r4
             . o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff2r4 o m a1 a2 = makeAff $ \error success ->
+callAff2r4 o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn5 \err res1 res2 res3 res4 -> unsafePerformEff $
-    if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3, res4: res4} else error err
+    if (isNullOrUndefined err)
+    then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+    else (cb $ Left err)
 
 
 callAff3r4 :: forall o a1 a2 a3 b r1 r2 r3 r4
             . o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff3r4 o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r4 o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn5 \err res1 res2 res3 res4 -> unsafePerformEff $
-    if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3, res4: res4} else error err
+    if (isNullOrUndefined err)
+    then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+    else (cb $ Left err)
 
 
 callAff4r4 :: forall o a1 a2 a3 a4 b r1 r2 r3 r4
             . o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff4r4 o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r4 o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn5 \err res1 res2 res3 res4 -> unsafePerformEff $
-    if (isNullOrUndefined err) then success {res1: res1, res2: res2, res3: res3, res4: res4} else error err
+    if (isNullOrUndefined err)
+    then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+    else (cb $ Left err)
 
 
 
 
 callAff0r1' :: forall o b c. o -> Method -> Aff b c
-callAff0r1' o m = makeAff $ \error success ->
+callAff0r1' o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn1 \res ->
-    unsafePerformEff $ maybe (success res) error (mkError res)
+    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 callAff1r1' :: forall o a1 b c. o -> Method -> a1 -> Aff b c
-callAff1r1' o m a1 = makeAff $ \error success ->
+callAff1r1' o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn1 \res ->
-    unsafePerformEff $ maybe (success res) error (mkError res)
+    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 callAff2r1' :: forall o a1 a2 b c. o -> Method -> a1 -> a2 -> Aff b c
-callAff2r1' o m a1 a2 = makeAff $ \error success ->
+callAff2r1' o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn1 \res ->
-    unsafePerformEff $ maybe (success res) error (mkError res)
+    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 callAff3r1' :: forall o a1 a2 a3 b c. o -> Method -> a1 -> a2 -> a3 -> Aff b c
-callAff3r1' o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r1' o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn1 \res ->
-    unsafePerformEff $ maybe (success res) error (mkError res)
+    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 callAff4r1' :: forall o a1 a2 a3 a4 b c. o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b c
-callAff4r1' o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r1' o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn1 \res ->
-    unsafePerformEff $ maybe (success res) error (mkError res)
+    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 
 callAff0r2' :: forall o b r1 r2. o -> Method -> Aff b {res1 :: r1, res2 :: r2}
-callAff0r2' o m = makeAff $ \error success ->
+callAff0r2' o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn2 \res1 res2 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff1r2' :: forall o a1 b r1 r2. o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2}
-callAff1r2' o m a1 = makeAff $ \error success ->
+callAff1r2' o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn2 \res1 res2 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff2r2' :: forall o a1 a2 b r1 r2. o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2}
-callAff2r2' o m a1 a2 = makeAff $ \error success ->
+callAff2r2' o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn2 \res1 res2 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff3r2' :: forall o a1 a2 a3 b r1 r2. o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2}
-callAff3r2' o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r2' o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn2 \res1 res2 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff4r2' :: forall o a1 a2 a3 a4 b r1 r2. o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2}
-callAff4r2' o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r2' o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn2 \res1 res2 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff0r3' :: forall o b r1 r2 r3
              . o -> Method -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff0r3' o m = makeAff $ \error success ->
+callAff0r3' o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn3 \res1 res2 res3 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff1r3' :: forall o a1 b r1 r2 r3
              . o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff1r3' o m a1 = makeAff $ \error success ->
+callAff1r3' o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn3 \res1 res2 res3 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff2r3' :: forall o a1 a2 b r1 r2 r3
              . o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff2r3' o m a1 a2 = makeAff $ \error success ->
+callAff2r3' o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn3 \res1 res2 res3 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff3r3' :: forall o a1 a2 a3 b r1 r2 r3
              . o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff3r3' o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r3' o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn3 \res1 res2 res3 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3})
+      (cb <<< Left)
+      (mkError res1)
 
 callAff4r3' :: forall o a1 a2 a3 a4 b r1 r2 r3
              . o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3}
-callAff4r3' o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r3' o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn3 \res1 res2 res3 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff0r4' :: forall o b r1 r2 r3 r4
              . o -> Method -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff0r4' o m = makeAff $ \error success ->
+callAff0r4' o m = makeAff $ \cb ->
   pure $ call1 o m $ mkFn4 \res1 res2 res3 res4 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3, res4: res4}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff1r4' :: forall o a1 b r1 r2 r3 r4
              . o -> Method -> a1 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff1r4' o m a1 = makeAff $ \error success ->
+callAff1r4' o m a1 = makeAff $ \cb ->
   pure $ call2 o m a1 $ mkFn4 \res1 res2 res3 res4 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3, res4: res4}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff2r4' :: forall o a1 a2 b r1 r2 r3 r4
              . o -> Method -> a1 -> a2 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff2r4' o m a1 a2 = makeAff $ \error success ->
+callAff2r4' o m a1 a2 = makeAff $ \cb ->
   pure $ call3 o m a1 a2 $ mkFn4 \res1 res2 res3 res4 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3, res4: res4}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff3r4' :: forall o a1 a2 a3 b r1 r2 r3 r4
              . o -> Method -> a1 -> a2 -> a3 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff3r4' o m a1 a2 a3 = makeAff $ \error success ->
+callAff3r4' o m a1 a2 a3 = makeAff $ \cb ->
   pure $ call4 o m a1 a2 a3 $ mkFn4 \res1 res2 res3 res4 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3, res4: res4}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+      (cb <<< Left)
+      (mkError res1)
 
 
 callAff4r4' :: forall o a1 a2 a3 a4 b r1 r2 r3 r4
              . o -> Method -> a1 -> a2 -> a3 -> a4 -> Aff b {res1 :: r1, res2 :: r2, res3 :: r3, res4 :: r4}
-callAff4r4' o m a1 a2 a3 a4 = makeAff $ \error success ->
+callAff4r4' o m a1 a2 a3 a4 = makeAff $ \cb ->
   pure $ call5 o m a1 a2 a3 a4 $ mkFn4 \res1 res2 res3 res4 ->
-    unsafePerformEff $ maybe (success {res1: res1, res2: res2, res3: res3, res4: res4}) error (mkError res1)
+    unsafePerformEff $
+      maybe
+      (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
+      (cb <<< Left)
+      (mkError res1)
 
 
 
