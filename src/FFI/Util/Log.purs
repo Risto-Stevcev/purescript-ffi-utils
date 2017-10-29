@@ -6,10 +6,11 @@ import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Exception (EXCEPTION)
 
 -- | Logs any kind of object
-foreign import logAny :: forall a e. a -> Eff (console :: CONSOLE | e) Unit
+foreign import logAny ∷ ∀ a e. a → Eff (console ∷ CONSOLE | e) Unit
 
 -- | Like logAny except restricted to records
-foreign import logObject :: forall e r. { | r } -> Eff (console :: CONSOLE | e) Unit
+foreign import logObject ∷ ∀ e r. { | r } → Eff (console ∷ CONSOLE | e) Unit
 
 -- | Stringifies and pretty prints the object before logging it
-foreign import logStringify :: forall e r. { | r } -> Eff (console :: CONSOLE, err :: EXCEPTION | e) Unit
+foreign import logStringify
+  ∷ ∀ e r. { | r } → Eff (console ∷ CONSOLE, err ∷ EXCEPTION | e) Unit

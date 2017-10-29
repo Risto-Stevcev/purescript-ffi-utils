@@ -9,7 +9,7 @@ import Data.Foreign (Foreign)
 
 
 class Taggable a where
-  tag :: Foreign -> a
+  tag ∷ Foreign → a
 
 class Untaggable a where
-  untag :: a -> Foreign
+  untag ∷ a → Foreign
