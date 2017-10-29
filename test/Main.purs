@@ -20,6 +20,7 @@ import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property'
 import FFI.Util.Class (class Taggable, class Untaggable, untag, tag)
 import FFI.Util.Function (callEff0, callEff1, callAff2r1, listenToEff0)
 import FFI.Util.Log (logAny)
+import Node.Process (PROCESS, cwd)
 import Prelude (Unit, class Show, show, bind, discard, ($), (#), (<$>), (>>=), (==), (<>), pure, unit)
 
 
@@ -121,8 +122,8 @@ streamProcess stream = (streamProducer stream) $$ (streamConsumer)
 
 
 main :: forall e
-      . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION, exception :: EXCEPTION | e)
-        (Fiber (fs :: FS, console :: CONSOLE, avar :: AVAR, err :: EXCEPTION, buffer :: BUFFER, exception :: EXCEPTION| e) Unit)
+      . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION, exception :: EXCEPTION, process ∷ PROCESS | e)
+        (Fiber (fs :: FS, console :: CONSOLE, avar :: AVAR, err :: EXCEPTION, buffer :: BUFFER, exception :: EXCEPTION, process ∷ PROCESS | e) Unit)
 main = do
   log $ stringify false $ parseOptions config1  -- {"foo":"bar","bar":{"baz":null,"qux":true}}
   log $ stringify false $ parseOptions config2  -- {"foo":"bar","bar":{"baz":3,"qux":true}}
@@ -151,12 +152,14 @@ main = do
     buf' <- toString buf  -- foobar
     log buf'
 
+  bowerFile ← (_ <> "/bower.json") <$> cwd
+
   -- | Launch the stream coroutine
   _ <- launchAff $ do
-    stream <- liftEff' $ createReadStream "/home/pureuser/src/bower.json"
+    stream <- liftEff' $ createReadStream bowerFile
     runProcess (streamProcess stream)
 
   -- | Outputs the contents of bower.json to stdout
   launchAff $ do
-    contents <- readFile "/home/pureuser/src/bower.json"
+    contents <- readFile bowerFile
     AffLog.log contents

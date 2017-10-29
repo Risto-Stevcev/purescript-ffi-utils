@@ -25,6 +25,8 @@
   "devDependencies": {
     "purescript-psci-support": "^3.0.0",
     "purescript-aff-coroutines": "^6.0.0",
-    "purescript-foreign-generic": "^4.1.0"
+    "purescript-foreign-generic": "^4.1.0",
+    "purescript-coroutines": "^4.0.0",
+    "purescript-node-process": "^5.0.0"
   }
 }
