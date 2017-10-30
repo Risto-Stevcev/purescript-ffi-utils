@@ -2,8 +2,8 @@ module Test.Main where
 
 import Prelude
 import Control.Monad.Eff (Eff)
-import Control.Monad.Aff (Fiber)
+import Test.Spec.Runner (RunnerEffects)
 import Test.FFI.Utils (TestEffects, main) as Test
 
-main ∷ ∀ e. Eff (Test.TestEffects e) (Fiber (Test.TestEffects e) Unit)
+main ∷ Eff (RunnerEffects (Test.TestEffects ())) Unit
 main = Test.main
