@@ -2,7 +2,7 @@
   "name": "purescript-ffi-utils",
   "homepage": "https://github.com/Risto-Stevcev/purescript-ffi-utils",
   "description": "A utility library for the purescript foreign function interface",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git://github.com/Risto-Stevcev/purescript-ffi-utils.git"
