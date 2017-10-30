@@ -2,6 +2,7 @@
 
 [![Latest release](http://img.shields.io/bower/v/purescript-ffi-utils.svg)](https://github.com/Risto-Stevcev/purescript-ffi-utils/releases)
 [![Pursuit](http://pursuit.purescript.org/packages/purescript-ffi-utils/badge)](https://pursuit.purescript.org/packages/purescript-ffi-utils)
+[![Build Status](https://travis-ci.org/Risto-Stevcev/purescript-ffi-utils.svg?branch=master)](https://travis-ci.org/Risto-Stevcev/purescript-ffi-utils)
 
 A utility library for the purescript foreign function interface
 
