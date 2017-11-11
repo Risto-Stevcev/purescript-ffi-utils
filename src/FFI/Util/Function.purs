@@ -9,7 +9,6 @@ module FFI.Util.Function
   , call4
   , call5
   , call6
-  , call7
 
   , callEff0
   , callEff1
@@ -18,7 +17,6 @@ module FFI.Util.Function
   , callEff4
   , callEff5
   , callEff6
-  , callEff7
 
   , callAff0r1
   , callAff0r1'
@@ -87,11 +85,11 @@ import Control.Category ((<<<))
 import Control.Monad.Aff (Aff, makeAff)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
-import Control.Monad.Eff.Uncurried (EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9, runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9, mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4)
+import Control.Monad.Eff.Uncurried (EffFn10, EffFn2, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9, mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4, runEffFn10, runEffFn2, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9)
 import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Data.Either (Either(..))
-import Data.Function.Uncurried (Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9, runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9, mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5)
-import Data.Maybe (Maybe, maybe)
+import Data.Function.Uncurried (Fn10, Fn2, Fn5, Fn6, Fn7, Fn8, Fn9, mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5, runFn10, runFn2, runFn5, runFn6, runFn7, runFn8, runFn9)
+import Data.Maybe (Maybe(..), maybe)
 import FFI.Util (isNullOrUndefined)
 import Prelude (($), Unit, pure)
 
@@ -99,7 +97,9 @@ import Prelude (($), Unit, pure)
 type Method = String
 type Event = String
 
-foreign import mkError ∷ ∀ a. a → Maybe Error
+foreign import _mkError ∷ ∀ a m. (m → Maybe m) → (Maybe m) → a → Maybe Error
+mkError ∷ ∀ a. a → Maybe Error
+mkError = _mkError Just Nothing
 
 foreign import apply ∷ ∀ f a b. f → Array a → b
 
@@ -107,85 +107,73 @@ foreign import bind ∷ ∀ f g a. f → a → g
 infixl 6 bind as |.|
 
 foreign import _call0 ∷ ∀ o b. Fn2 o Method b
-foreign import _call1 ∷ ∀ o a1 b. Fn3 o Method a1 b
-foreign import _call2 ∷ ∀ o a1 a2 b. Fn4 o Method a1 a2 b
-foreign import _call3 ∷ ∀ o a1 a2 a3 b. Fn5 o Method a1 a2 a3 b
-foreign import _call4 ∷ ∀ o a1 a2 a3 a4 b. Fn6 o Method a1 a2 a3 a4 b
-foreign import _call5 ∷ ∀ o a1 a2 a3 a4 a5 b. Fn7 o Method a1 a2 a3 a4 a5 b
+foreign import _call1 ∷ ∀ m o a1 b. Fn5 (m → Maybe m) (Maybe m) o Method a1 b
+foreign import _call2 ∷ ∀ m o a1 a2 b. Fn6 (m → Maybe m) (Maybe m) o Method a1 a2 b
+foreign import _call3 ∷ ∀ m o a1 a2 a3 b. Fn7 (m → Maybe m) (Maybe m) o Method a1 a2 a3 b
+foreign import _call4 ∷ ∀ m o a1 a2 a3 a4 b. Fn8 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 b
+foreign import _call5 ∷ ∀ m o a1 a2 a3 a4 a5 b. Fn9 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 b
 foreign import _call6
-  ∷ ∀ o a1 a2 a3 a4 a5 a6 b. Fn8 o Method a1 a2 a3 a4 a5 a6 b
-foreign import _call7
-  ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 b. Fn9 o Method a1 a2 a3 a4 a5 a6 a7 b
+  ∷ ∀ m o a1 a2 a3 a4 a5 a6 b. Fn10 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 a6 b
 
 call0 ∷ ∀ o b. o → Method → b
 call0 = runFn2 _call0
 
 call1 ∷ ∀ o a1 b. o → Method → a1 → b
-call1 = runFn3 _call1
+call1 = runFn5 _call1 Just Nothing
 
 call2 ∷ ∀ o a1 a2 b. o → Method → a1 → a2 → b
-call2 = runFn4 _call2
+call2 = runFn6 _call2 Just Nothing
 
 call3 ∷ ∀ o a1 a2 a3 b. o → Method → a1 → a2 → a3 → b
-call3 = runFn5 _call3
+call3 = runFn7 _call3 Just Nothing
 
 call4 ∷ ∀ o a1 a2 a3 a4 b. o → Method → a1 → a2 → a3 → a4 → b
-call4 = runFn6 _call4
+call4 = runFn8 _call4 Just Nothing
 
 call5 ∷ ∀ o a1 a2 a3 a4 a5 b. o → Method → a1 → a2 → a3 → a4 → a5 → b
-call5 = runFn7 _call5
+call5 = runFn9 _call5 Just Nothing
 
 call6 ∷ ∀ o a1 a2 a3 a4 a5 a6 b. o → Method → a1 → a2 → a3 → a4 → a5 → a6 → b
-call6 = runFn8 _call6
-
-call7
-  ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 b
-  . o → Method → a1 → a2 → a3 → a4 → a5 → a6 → a7 → b
-call7 = runFn9 _call7
-
+call6 = runFn10 _call6 Just Nothing
 
 
 foreign import _callEff0 ∷ ∀ eff o b. EffFn2 eff o Method b
-foreign import _callEff1 ∷ ∀ eff o a1 b. EffFn3 eff o Method a1 b
-foreign import _callEff2 ∷ ∀ eff o a1 a2 b. EffFn4 eff o Method a1 a2 b
-foreign import _callEff3 ∷ ∀ eff o a1 a2 a3 b. EffFn5 eff o Method a1 a2 a3 b
+foreign import _callEff1
+  ∷ ∀ eff m o a1 b. EffFn5 eff (m → Maybe m) (Maybe m) o Method a1 b
+foreign import _callEff2
+  ∷ ∀ eff m o a1 a2 b. EffFn6 eff (m → Maybe m) (Maybe m) o Method a1 a2 b
+foreign import _callEff3
+  ∷ ∀ eff m o a1 a2 a3 b. EffFn7 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 b
 foreign import _callEff4
-  ∷ ∀ eff o a1 a2 a3 a4 b. EffFn6 eff o Method a1 a2 a3 a4 b
+  ∷ ∀ eff m o a1 a2 a3 a4 b. EffFn8 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 b
 foreign import _callEff5
-  ∷ ∀ eff o a1 a2 a3 a4 a5 b. EffFn7 eff o Method a1 a2 a3 a4 a5 b
+  ∷ ∀ eff m o a1 a2 a3 a4 a5 b. EffFn9 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 b
 foreign import _callEff6
-  ∷ ∀ eff o a1 a2 a3 a4 a5 a6 b. EffFn8 eff o Method a1 a2 a3 a4 a5 a6 b
-foreign import _callEff7
-  ∷ ∀ eff o a1 a2 a3 a4 a5 a6 a7 b. EffFn9 eff o Method a1 a2 a3 a4 a5 a6 a7 b
+  ∷ ∀ eff m o a1 a2 a3 a4 a5 a6 b. EffFn10 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 a6 b
 
 callEff0 ∷ ∀ o eff b. o → Method → Eff eff b
 callEff0 = runEffFn2 _callEff0
 
 callEff1 ∷ ∀ o a1 eff b. o → Method → a1 → Eff eff b
-callEff1 = runEffFn3 _callEff1
+callEff1 = runEffFn5 _callEff1 Just Nothing
 
 callEff2 ∷ ∀ o a1 a2 eff b. o → Method → a1 → a2 → Eff eff b
-callEff2 = runEffFn4 _callEff2
+callEff2 = runEffFn6 _callEff2 Just Nothing
 
 callEff3 ∷ ∀ o a1 a2 a3 eff b. o → Method → a1 → a2 → a3 → Eff eff b
-callEff3 = runEffFn5 _callEff3
+callEff3 = runEffFn7 _callEff3 Just Nothing
 
 callEff4 ∷ ∀ o a1 a2 a3 a4 eff b. o → Method → a1 → a2 → a3 → a4 → Eff eff b
-callEff4 = runEffFn6 _callEff4
+callEff4 = runEffFn8 _callEff4 Just Nothing
 
 callEff5
   ∷ ∀ o a1 a2 a3 a4 a5 eff b. o → Method → a1 → a2 → a3 → a4 → a5 → Eff eff b
-callEff5 = runEffFn7 _callEff5
+callEff5 = runEffFn9 _callEff5 Just Nothing
 
 callEff6
   ∷ ∀ o a1 a2 a3 a4 a5 a6 eff b
   . o → Method → a1 → a2 → a3 → a4 → a5 → a6 → Eff eff b
-callEff6 = runEffFn8 _callEff6
-
-callEff7
-  ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 eff b
-  . o → Method → a1 → a2 → a3 → a4 → a5 → a6 → a7 → Eff eff b
-callEff7 = runEffFn9 _callEff7
+callEff6 = runEffFn10 _callEff6 Just Nothing
 
 
 
