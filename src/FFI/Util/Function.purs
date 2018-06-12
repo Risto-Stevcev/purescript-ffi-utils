@@ -10,13 +10,13 @@ module FFI.Util.Function
   , call5
   , call6
 
-  , callEff0
-  , callEff1
-  , callEff2
-  , callEff3
-  , callEff4
-  , callEff5
-  , callEff6
+  , callEffect0
+  , callEffect1
+  , callEffect2
+  , callEffect3
+  , callEffect4
+  , callEffect5
+  , callEffect6
 
   , callAff0r1
   , callAff0r1'
@@ -74,19 +74,19 @@ module FFI.Util.Function
   , listenTo3
   , listenTo4
 
-  , listenToEff0
-  , listenToEff1
-  , listenToEff2
-  , listenToEff3
-  , listenToEff4
+  , listenToEffect0
+  , listenToEffect1
+  , listenToEffect2
+  , listenToEffect3
+  , listenToEffect4
   ) where
 
 import Control.Category ((<<<))
-import Control.Monad.Aff (Aff, makeAff)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
-import Control.Monad.Eff.Uncurried (EffFn10, EffFn2, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9, mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4, runEffFn10, runEffFn2, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9)
-import Control.Monad.Eff.Unsafe (unsafePerformEff)
+import Effect.Aff (Aff, makeAff)
+import Effect (Effect)
+import Effect.Exception (Error)
+import Effect.Uncurried (EffectFn10, EffectFn2, EffectFn5, EffectFn6, EffectFn7, EffectFn8, EffectFn9, mkEffectFn1, mkEffectFn2, mkEffectFn3, mkEffectFn4, runEffectFn10, runEffectFn2, runEffectFn5, runEffectFn6, runEffectFn7, runEffectFn8, runEffectFn9)
+import Effect.Unsafe (unsafePerformEffect)
 import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn10, Fn2, Fn5, Fn6, Fn7, Fn8, Fn9, mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5, runFn10, runFn2, runFn5, runFn6, runFn7, runFn8, runFn9)
 import Data.Maybe (Maybe(..), maybe)
@@ -137,227 +137,227 @@ call6 ∷ ∀ o a1 a2 a3 a4 a5 a6 b. o → Method → a1 → a2 → a3 → a4 �
 call6 = runFn10 _call6 Just Nothing
 
 
-foreign import _callEff0 ∷ ∀ eff o b. EffFn2 eff o Method b
-foreign import _callEff1
-  ∷ ∀ eff m o a1 b. EffFn5 eff (m → Maybe m) (Maybe m) o Method a1 b
-foreign import _callEff2
-  ∷ ∀ eff m o a1 a2 b. EffFn6 eff (m → Maybe m) (Maybe m) o Method a1 a2 b
-foreign import _callEff3
-  ∷ ∀ eff m o a1 a2 a3 b. EffFn7 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 b
-foreign import _callEff4
-  ∷ ∀ eff m o a1 a2 a3 a4 b. EffFn8 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 b
-foreign import _callEff5
-  ∷ ∀ eff m o a1 a2 a3 a4 a5 b. EffFn9 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 b
-foreign import _callEff6
-  ∷ ∀ eff m o a1 a2 a3 a4 a5 a6 b. EffFn10 eff (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 a6 b
+foreign import _callEffect0 ∷ ∀ o b. EffectFn2 o Method b
+foreign import _callEffect1
+  ∷ ∀ m o a1 b. EffectFn5 (m → Maybe m) (Maybe m) o Method a1 b
+foreign import _callEffect2
+  ∷ ∀ m o a1 a2 b. EffectFn6 (m → Maybe m) (Maybe m) o Method a1 a2 b
+foreign import _callEffect3
+  ∷ ∀ m o a1 a2 a3 b. EffectFn7 (m → Maybe m) (Maybe m) o Method a1 a2 a3 b
+foreign import _callEffect4
+  ∷ ∀ m o a1 a2 a3 a4 b. EffectFn8 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 b
+foreign import _callEffect5
+  ∷ ∀ m o a1 a2 a3 a4 a5 b. EffectFn9 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 b
+foreign import _callEffect6
+  ∷ ∀ m o a1 a2 a3 a4 a5 a6 b. EffectFn10 (m → Maybe m) (Maybe m) o Method a1 a2 a3 a4 a5 a6 b
 
-callEff0 ∷ ∀ o eff b. o → Method → Eff eff b
-callEff0 = runEffFn2 _callEff0
+callEffect0 ∷ ∀ o b. o → Method → Effect b
+callEffect0 = runEffectFn2 _callEffect0
 
-callEff1 ∷ ∀ o a1 eff b. o → Method → a1 → Eff eff b
-callEff1 = runEffFn5 _callEff1 Just Nothing
+callEffect1 ∷ ∀ o a1 b. o → Method → a1 → Effect b
+callEffect1 = runEffectFn5 _callEffect1 Just Nothing
 
-callEff2 ∷ ∀ o a1 a2 eff b. o → Method → a1 → a2 → Eff eff b
-callEff2 = runEffFn6 _callEff2 Just Nothing
+callEffect2 ∷ ∀ o a1 a2 b. o → Method → a1 → a2 → Effect b
+callEffect2 = runEffectFn6 _callEffect2 Just Nothing
 
-callEff3 ∷ ∀ o a1 a2 a3 eff b. o → Method → a1 → a2 → a3 → Eff eff b
-callEff3 = runEffFn7 _callEff3 Just Nothing
+callEffect3 ∷ ∀ o a1 a2 a3 b. o → Method → a1 → a2 → a3 → Effect b
+callEffect3 = runEffectFn7 _callEffect3 Just Nothing
 
-callEff4 ∷ ∀ o a1 a2 a3 a4 eff b. o → Method → a1 → a2 → a3 → a4 → Eff eff b
-callEff4 = runEffFn8 _callEff4 Just Nothing
+callEffect4 ∷ ∀ o a1 a2 a3 a4 b. o → Method → a1 → a2 → a3 → a4 → Effect b
+callEffect4 = runEffectFn8 _callEffect4 Just Nothing
 
-callEff5
-  ∷ ∀ o a1 a2 a3 a4 a5 eff b. o → Method → a1 → a2 → a3 → a4 → a5 → Eff eff b
-callEff5 = runEffFn9 _callEff5 Just Nothing
+callEffect5
+  ∷ ∀ o a1 a2 a3 a4 a5 b. o → Method → a1 → a2 → a3 → a4 → a5 → Effect b
+callEffect5 = runEffectFn9 _callEffect5 Just Nothing
 
-callEff6
-  ∷ ∀ o a1 a2 a3 a4 a5 a6 eff b
-  . o → Method → a1 → a2 → a3 → a4 → a5 → a6 → Eff eff b
-callEff6 = runEffFn10 _callEff6 Just Nothing
+callEffect6
+  ∷ ∀ o a1 a2 a3 a4 a5 a6 b
+  . o → Method → a1 → a2 → a3 → a4 → a5 → a6 → Effect b
+callEffect6 = runEffectFn10 _callEffect6 Just Nothing
 
 
 
-callAff0r1 ∷ ∀ o b c. o → Method → Aff b c
+callAff0r1 ∷ ∀ o c. o → Method → Aff c
 callAff0r1 o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn2 \err res →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right res)
       else (cb $ Left err)
 
-callAff1r1 ∷ ∀ o a1 b c. o → Method → a1 → Aff b c
+callAff1r1 ∷ ∀ o a1 c. o → Method → a1 → Aff c
 callAff1r1 o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn2 \err res →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right res)
       else (cb $ Left err)
 
-callAff2r1 ∷ ∀ o a1 a2 b c. o → Method → a1 → a2 → Aff b c
+callAff2r1 ∷ ∀ o a1 a2 c. o → Method → a1 → a2 → Aff c
 callAff2r1 o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn2 \err res →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right res)
       else (cb $ Left err)
 
-callAff3r1 ∷ ∀ o a1 a2 a3 b c. o → Method → a1 → a2 → a3 → Aff b c
+callAff3r1 ∷ ∀ o a1 a2 a3 c. o → Method → a1 → a2 → a3 → Aff c
 callAff3r1 o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn2 \err res →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right res)
       else (cb $ Left err)
 
-callAff4r1 ∷ ∀ o a1 a2 a3 a4 b c. o → Method → a1 → a2 → a3 → a4 → Aff b c
+callAff4r1 ∷ ∀ o a1 a2 a3 a4 c. o → Method → a1 → a2 → a3 → a4 → Aff c
 callAff4r1 o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn2 \err res →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right res)
       else (cb $ Left err)
 
 
-callAff0r2 ∷ ∀ o b r1 r2. o → Method → Aff b {res1 ∷ r1, res2 ∷ r2}
+callAff0r2 ∷ ∀ o r1 r2. o → Method → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff0r2 o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn3 \err res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2})
       else (cb $ Left err)
 
-callAff1r2 ∷ ∀ o a1 b r1 r2. o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2}
+callAff1r2 ∷ ∀ o a1 r1 r2. o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff1r2 o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn3 \err res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2})
       else (cb $ Left err)
 
 callAff2r2
-  ∷ ∀ o a1 a2 b r1 r2. o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 r1 r2. o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff2r2 o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn3 \err res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2})
       else (cb $ Left err)
 
 callAff3r2
-  ∷ ∀ o a1 a2 a3 b r1 r2
-  . o → Method → a1 → a2 → a3 → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 a3 r1 r2
+  . o → Method → a1 → a2 → a3 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff3r2 o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn3 \err res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2})
       else (cb $ Left err)
 
 callAff4r2
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2
-  . o → Method → a1 → a2 → a3 → a4 → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 a3 a4 r1 r2
+  . o → Method → a1 → a2 → a3 → a4 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff4r2 o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn3 \err res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2})
       else (cb $ Left err)
 
 
-callAff0r3 ∷ ∀ o b r1 r2 r3
-            . o → Method → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+callAff0r3 ∷ ∀ o r1 r2 r3
+            . o → Method → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff0r3 o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn4 \err res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2, res3: res3})
       else (cb $ Left err)
 
-callAff1r3 ∷ ∀ o a1 b r1 r2 r3
-            . o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+callAff1r3 ∷ ∀ o a1 r1 r2 r3
+            . o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff1r3 o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn4 \err res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2, res3: res3})
       else (cb $ Left err)
 
-callAff2r3 ∷ ∀ o a1 a2 b r1 r2 r3
-            . o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+callAff2r3 ∷ ∀ o a1 a2 r1 r2 r3
+            . o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff2r3 o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn4 \err res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2, res3: res3})
       else (cb $ Left err)
 
-callAff3r3 ∷ ∀ o a1 a2 a3 b r1 r2 r3
-            . o → Method → a1 → a2 → a3 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+callAff3r3 ∷ ∀ o a1 a2 a3 r1 r2 r3
+            . o → Method → a1 → a2 → a3 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff3r3 o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn4 \err res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2, res3: res3})
       else (cb $ Left err)
 
 callAff4r3
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2 r3
-  . o → Method → a1 → a2 → a3 → a4 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o a1 a2 a3 a4 r1 r2 r3
+  . o → Method → a1 → a2 → a3 → a4 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff4r3 o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn4 \err res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       if (isNullOrUndefined err)
       then (cb $ Right {res1: res1, res2: res2, res3: res3})
       else (cb $ Left err)
 
 
 callAff0r4
-  ∷ ∀ o b r1 r2 r3 r4
-  . o → Method → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o r1 r2 r3 r4
+  . o → Method → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff0r4 o m = makeAff $ \cb →
-  pure $ call1 o m $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEff $
+  pure $ call1 o m $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEffect $
     if (isNullOrUndefined err)
     then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
     else (cb $ Left err)
 
 
 callAff1r4
-  ∷ ∀ o a1 b r1 r2 r3 r4
-  . o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o a1 r1 r2 r3 r4
+  . o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff1r4 o m a1 = makeAff $ \cb →
-  pure $ call2 o m a1 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEff $
+  pure $ call2 o m a1 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEffect $
     if (isNullOrUndefined err)
     then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
     else (cb $ Left err)
 
 
 callAff2r4
-  ∷ ∀ o a1 a2 b r1 r2 r3 r4
-  . o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o a1 a2 r1 r2 r3 r4
+  . o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff2r4 o m a1 a2 = makeAff $ \cb →
-  pure $ call3 o m a1 a2 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEff $
+  pure $ call3 o m a1 a2 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEffect $
     if (isNullOrUndefined err)
     then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
     else (cb $ Left err)
 
 
 callAff3r4
-  ∷ ∀ o a1 a2 a3 b r1 r2 r3 r4
+  ∷ ∀ o a1 a2 a3 r1 r2 r3 r4
   . o → Method → a1 → a2 → a3
-  → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff3r4 o m a1 a2 a3 = makeAff $ \cb →
-  pure $ call4 o m a1 a2 a3 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEff $
+  pure $ call4 o m a1 a2 a3 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEffect $
     if (isNullOrUndefined err)
     then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
     else (cb $ Left err)
 
 
 callAff4r4
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2 r3 r4
+  ∷ ∀ o a1 a2 a3 a4 r1 r2 r3 r4
   . o → Method → a1 → a2 → a3 → a4
-  → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff4r4 o m a1 a2 a3 a4 = makeAff $ \cb →
-  pure $ call5 o m a1 a2 a3 a4 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEff $
+  pure $ call5 o m a1 a2 a3 a4 $ mkFn5 \err res1 res2 res3 res4 → unsafePerformEffect $
     if (isNullOrUndefined err)
     then (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
     else (cb $ Left err)
@@ -365,77 +365,77 @@ callAff4r4 o m a1 a2 a3 a4 = makeAff $ \cb →
 
 
 
-callAff0r1' ∷ ∀ o b c. o → Method → Aff b c
+callAff0r1' ∷ ∀ o c. o → Method → Aff c
 callAff0r1' o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn1 \res →
-    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
+    unsafePerformEffect $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
-callAff1r1' ∷ ∀ o a1 b c. o → Method → a1 → Aff b c
+callAff1r1' ∷ ∀ o a1 c. o → Method → a1 → Aff c
 callAff1r1' o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn1 \res →
-    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
+    unsafePerformEffect $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
-callAff2r1' ∷ ∀ o a1 a2 b c. o → Method → a1 → a2 → Aff b c
+callAff2r1' ∷ ∀ o a1 a2 c. o → Method → a1 → a2 → Aff c
 callAff2r1' o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn1 \res →
-    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
+    unsafePerformEffect $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
-callAff3r1' ∷ ∀ o a1 a2 a3 b c. o → Method → a1 → a2 → a3 → Aff b c
+callAff3r1' ∷ ∀ o a1 a2 a3 c. o → Method → a1 → a2 → a3 → Aff c
 callAff3r1' o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn1 \res →
-    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
+    unsafePerformEffect $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
-callAff4r1' ∷ ∀ o a1 a2 a3 a4 b c. o → Method → a1 → a2 → a3 → a4 → Aff b c
+callAff4r1' ∷ ∀ o a1 a2 a3 a4 c. o → Method → a1 → a2 → a3 → a4 → Aff c
 callAff4r1' o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn1 \res →
-    unsafePerformEff $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
+    unsafePerformEffect $ maybe (cb $ Right res) (cb <<< Left) (mkError res)
 
 
-callAff0r2' ∷ ∀ o b r1 r2. o → Method → Aff b {res1 ∷ r1, res2 ∷ r2}
+callAff0r2' ∷ ∀ o r1 r2. o → Method → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff0r2' o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn2 \res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2})
       (cb <<< Left)
       (mkError res1)
 
-callAff1r2' ∷ ∀ o a1 b r1 r2. o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2}
+callAff1r2' ∷ ∀ o a1 r1 r2. o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff1r2' o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn2 \res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2})
       (cb <<< Left)
       (mkError res1)
 
 callAff2r2'
-  ∷ ∀ o a1 a2 b r1 r2. o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 r1 r2. o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff2r2' o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn2 \res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2})
       (cb <<< Left)
       (mkError res1)
 
 callAff3r2'
-  ∷ ∀ o a1 a2 a3 b r1 r2. o → Method → a1 → a2 → a3
-  → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 a3 r1 r2. o → Method → a1 → a2 → a3
+  → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff3r2' o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn2 \res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2})
       (cb <<< Left)
       (mkError res1)
 
 callAff4r2'
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2. o → Method → a1 → a2 → a3 → a4
-  → Aff b {res1 ∷ r1, res2 ∷ r2}
+  ∷ ∀ o a1 a2 a3 a4 r1 r2. o → Method → a1 → a2 → a3 → a4
+  → Aff {res1 ∷ r1, res2 ∷ r2}
 callAff4r2' o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn2 \res1 res2 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2})
       (cb <<< Left)
@@ -443,53 +443,53 @@ callAff4r2' o m a1 a2 a3 a4 = makeAff $ \cb →
 
 
 callAff0r3'
-  ∷ ∀ o b r1 r2 r3. o → Method → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o r1 r2 r3. o → Method → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff0r3' o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn3 \res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3})
       (cb <<< Left)
       (mkError res1)
 
 callAff1r3'
-  ∷ ∀ o a1 b r1 r2 r3. o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o a1 r1 r2 r3. o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff1r3' o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn3 \res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3})
       (cb <<< Left)
       (mkError res1)
 
 callAff2r3'
-  ∷ ∀ o a1 a2 b r1 r2 r3
-  . o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o a1 a2 r1 r2 r3
+  . o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff2r3' o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn3 \res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3})
       (cb <<< Left)
       (mkError res1)
 
 callAff3r3'
-  ∷ ∀ o a1 a2 a3 b r1 r2 r3
-  . o → Method → a1 → a2 → a3 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o a1 a2 a3 r1 r2 r3
+  . o → Method → a1 → a2 → a3 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff3r3' o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn3 \res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3})
       (cb <<< Left)
       (mkError res1)
 
 callAff4r3'
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2 r3
-  . o → Method → a1 → a2 → a3 → a4 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
+  ∷ ∀ o a1 a2 a3 a4 r1 r2 r3
+  . o → Method → a1 → a2 → a3 → a4 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3}
 callAff4r3' o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn3 \res1 res2 res3 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3})
       (cb <<< Left)
@@ -497,11 +497,11 @@ callAff4r3' o m a1 a2 a3 a4 = makeAff $ \cb →
 
 
 callAff0r4'
-  ∷ ∀ o b r1 r2 r3 r4
-  . o → Method → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o r1 r2 r3 r4
+  . o → Method → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff0r4' o m = makeAff $ \cb →
   pure $ call1 o m $ mkFn4 \res1 res2 res3 res4 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
       (cb <<< Left)
@@ -509,11 +509,11 @@ callAff0r4' o m = makeAff $ \cb →
 
 
 callAff1r4'
-  ∷ ∀ o a1 b r1 r2 r3 r4
-  . o → Method → a1 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o a1 r1 r2 r3 r4
+  . o → Method → a1 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff1r4' o m a1 = makeAff $ \cb →
   pure $ call2 o m a1 $ mkFn4 \res1 res2 res3 res4 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
       (cb <<< Left)
@@ -521,11 +521,11 @@ callAff1r4' o m a1 = makeAff $ \cb →
 
 
 callAff2r4'
-  ∷ ∀ o a1 a2 b r1 r2 r3 r4
-  . o → Method → a1 → a2 → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  ∷ ∀ o a1 a2 r1 r2 r3 r4
+  . o → Method → a1 → a2 → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff2r4' o m a1 a2 = makeAff $ \cb →
   pure $ call3 o m a1 a2 $ mkFn4 \res1 res2 res3 res4 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
       (cb <<< Left)
@@ -533,12 +533,12 @@ callAff2r4' o m a1 a2 = makeAff $ \cb →
 
 
 callAff3r4'
-  ∷ ∀ o a1 a2 a3 b r1 r2 r3 r4
+  ∷ ∀ o a1 a2 a3 r1 r2 r3 r4
   . o → Method → a1 → a2 → a3
-  → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff3r4' o m a1 a2 a3 = makeAff $ \cb →
   pure $ call4 o m a1 a2 a3 $ mkFn4 \res1 res2 res3 res4 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
       (cb <<< Left)
@@ -546,12 +546,12 @@ callAff3r4' o m a1 a2 a3 = makeAff $ \cb →
 
 
 callAff4r4'
-  ∷ ∀ o a1 a2 a3 a4 b r1 r2 r3 r4
+  ∷ ∀ o a1 a2 a3 a4 r1 r2 r3 r4
   . o → Method → a1 → a2 → a3 → a4
-  → Aff b {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
+  → Aff {res1 ∷ r1, res2 ∷ r2, res3 ∷ r3, res4 ∷ r4}
 callAff4r4' o m a1 a2 a3 a4 = makeAff $ \cb →
   pure $ call5 o m a1 a2 a3 a4 $ mkFn4 \res1 res2 res3 res4 →
-    unsafePerformEff $
+    unsafePerformEffect $
       maybe
       (cb $ Right {res1: res1, res2: res2, res3: res3, res4: res4})
       (cb <<< Left)
@@ -560,56 +560,56 @@ callAff4r4' o m a1 a2 a3 a4 = makeAff $ \cb →
 
 
 
-listen0 ∷ ∀ o e. o → Method → (Unit → Unit) → Eff e Unit
-listen0 o m g = callEff1 o m (mkFn0 g)
+listen0 ∷ ∀ o . o → Method → (Unit → Unit) → Effect Unit
+listen0 o m g = callEffect1 o m (mkFn0 g)
 
-listen1 ∷ ∀ o e a1. o → Method → (a1 → Unit) → Eff e Unit
-listen1 o m g = callEff1 o m (mkFn1 g)
+listen1 ∷ ∀ o a1. o → Method → (a1 → Unit) → Effect Unit
+listen1 o m g = callEffect1 o m (mkFn1 g)
 
-listen2 ∷ ∀ o e a1 a2. o → Method → (a1 → a2 → Unit) → Eff e Unit
-listen2 o m g = callEff1 o m (mkFn2 g)
+listen2 ∷ ∀ o a1 a2. o → Method → (a1 → a2 → Unit) → Effect Unit
+listen2 o m g = callEffect1 o m (mkFn2 g)
 
-listen3 ∷ ∀ o e a1 a2 a3. o → Method → (a1 → a2 → a3 → Unit) → Eff e Unit
-listen3 o m g = callEff1 o m (mkFn3 g)
+listen3 ∷ ∀ o a1 a2 a3. o → Method → (a1 → a2 → a3 → Unit) → Effect Unit
+listen3 o m g = callEffect1 o m (mkFn3 g)
 
-listen4 ∷ ∀ o e a1 a2 a3 a4. o → Method → (a1 → a2 → a3 → a4 → Unit) → Eff e Unit
-listen4 o m g = callEff1 o m (mkFn4 g)
+listen4 ∷ ∀ o a1 a2 a3 a4. o → Method → (a1 → a2 → a3 → a4 → Unit) → Effect Unit
+listen4 o m g = callEffect1 o m (mkFn4 g)
 
 
-listenTo0 ∷ ∀ o e. o → Method → Event → (Unit → Unit) → Eff e Unit
-listenTo0 o m e g = callEff2 o m e (mkFn0 g)
+listenTo0 ∷ ∀ o . o → Method → Event → (Unit → Unit) → Effect Unit
+listenTo0 o m e g = callEffect2 o m e (mkFn0 g)
 
-listenTo1 ∷ ∀ o e a1. o → Method → Event → (a1 → Unit) → Eff e Unit
-listenTo1 o m e g = callEff2 o m e (mkFn1 g)
+listenTo1 ∷ ∀ o a1. o → Method → Event → (a1 → Unit) → Effect Unit
+listenTo1 o m e g = callEffect2 o m e (mkFn1 g)
 
-listenTo2 ∷ ∀ o e a1 a2. o → Method → Event → (a1 → a2 → Unit) → Eff e Unit
-listenTo2 o m e g = callEff2 o m e (mkFn2 g)
+listenTo2 ∷ ∀ o a1 a2. o → Method → Event → (a1 → a2 → Unit) → Effect Unit
+listenTo2 o m e g = callEffect2 o m e (mkFn2 g)
 
 listenTo3
-  ∷ ∀ o e a1 a2 a3. o → Method → Event → (a1 → a2 → a3 → Unit) → Eff e Unit
-listenTo3 o m e g = callEff2 o m e (mkFn3 g)
+  ∷ ∀ o a1 a2 a3. o → Method → Event → (a1 → a2 → a3 → Unit) → Effect Unit
+listenTo3 o m e g = callEffect2 o m e (mkFn3 g)
 
 listenTo4
-  ∷ ∀ o e a1 a2 a3 a4. o → Method → Event → (a1 → a2 → a3 → a4 → Unit)
-  → Eff e Unit
-listenTo4 o m e g = callEff2 o m e (mkFn4 g)
+  ∷ ∀ o a1 a2 a3 a4. o → Method → Event → (a1 → a2 → a3 → a4 → Unit)
+  → Effect Unit
+listenTo4 o m e g = callEffect2 o m e (mkFn4 g)
 
 
-listenToEff0 ∷ ∀ o e. o → Method → Event → (Unit → Eff e Unit) → Eff e Unit
-listenToEff0 o m e g = callEff2 o m e (mkEffFn1 g)
+listenToEffect0 ∷ ∀ o . o → Method → Event → (Unit → Effect Unit) → Effect Unit
+listenToEffect0 o m e g = callEffect2 o m e (mkEffectFn1 g)
 
-listenToEff1 ∷ ∀ o e a1. o → Method → Event → (a1 → Eff e Unit) → Eff e Unit
-listenToEff1 o m e g = callEff2 o m e (mkEffFn1 g)
+listenToEffect1 ∷ ∀ o a1. o → Method → Event → (a1 → Effect Unit) → Effect Unit
+listenToEffect1 o m e g = callEffect2 o m e (mkEffectFn1 g)
 
-listenToEff2
-  ∷ ∀ o e a1 a2. o → Method → Event → (a1 → a2 → Eff e Unit) → Eff e Unit
-listenToEff2 o m e g = callEff2 o m e (mkEffFn2 g)
+listenToEffect2
+  ∷ ∀ o a1 a2. o → Method → Event → (a1 → a2 → Effect Unit) → Effect Unit
+listenToEffect2 o m e g = callEffect2 o m e (mkEffectFn2 g)
 
-listenToEff3
-  ∷ ∀ o e a1 a2 a3. o → Method → Event → (a1 → a2 → a3 → Eff e Unit) → Eff e Unit
-listenToEff3 o m e g = callEff2 o m e (mkEffFn3 g)
+listenToEffect3
+  ∷ ∀ o a1 a2 a3. o → Method → Event → (a1 → a2 → a3 → Effect Unit) → Effect Unit
+listenToEffect3 o m e g = callEffect2 o m e (mkEffectFn3 g)
 
-listenToEff4
-  ∷ ∀ o e a1 a2 a3 a4. o → Method → Event → (a1 → a2 → a3 → a4 → Eff e Unit)
-  → Eff e Unit
-listenToEff4 o m e g = callEff2 o m e (mkEffFn4 g)
+listenToEffect4
+  ∷ ∀ o a1 a2 a3 a4. o → Method → Event → (a1 → a2 → a3 → a4 → Effect Unit)
+  → Effect Unit
+listenToEffect4 o m e g = callEffect2 o m e (mkEffectFn4 g)
