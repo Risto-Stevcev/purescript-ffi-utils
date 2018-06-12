@@ -20,14 +20,14 @@ module FFI.Util
   , new5
   , new6
   , new7
-  , newEff0
-  , newEff1
-  , newEff2
-  , newEff3
-  , newEff4
-  , newEff5
-  , newEff6
-  , newEff7
+  , newEffect0
+  , newEffect1
+  , newEffect2
+  , newEffect3
+  , newEffect4
+  , newEffect5
+  , newEffect6
+  , newEffect7
   , window
   , global
   , Window
@@ -38,9 +38,9 @@ import Prelude (pure, unit, Unit)
 import Data.Maybe (Maybe(Nothing))
 import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8
                                , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8 )
-import Control.Monad.Eff.Uncurried ( EffFn1, EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8
-                                   , runEffFn1, runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8 )
-import Control.Monad.Eff (Eff)
+import Effect.Uncurried ( EffectFn1, EffectFn2, EffectFn3, EffectFn4, EffectFn5, EffectFn6, EffectFn7, EffectFn8
+                        , runEffectFn1, runEffectFn2, runEffectFn3, runEffectFn4, runEffectFn5, runEffectFn6, runEffectFn7, runEffectFn8 )
+import Effect (Effect)
 
 foreign import typeof ∷ ∀ a. a → String
 
@@ -113,35 +113,35 @@ new6 = runFn7 _new6
 new7 ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 b. o → a1 → a2 → a3 → a4 → a5 → a6 → a7 → b
 new7 = runFn8 _new7
 
-foreign import _newEff0 ∷ ∀ eff o b. EffFn1 eff o b
-foreign import _newEff1 ∷ ∀ eff o a1 b. EffFn2 eff o a1 b
-foreign import _newEff2 ∷ ∀ eff o a1 a2 b. EffFn3 eff o a1 a2 b
-foreign import _newEff3 ∷ ∀ eff o a1 a2 a3 b. EffFn4 eff o a1 a2 a3 b
-foreign import _newEff4 ∷ ∀ eff o a1 a2 a3 a4 b. EffFn5 eff o a1 a2 a3 a4 b
-foreign import _newEff5 ∷ ∀ eff o a1 a2 a3 a4 a5 b. EffFn6 eff o a1 a2 a3 a4 a5 b
-foreign import _newEff6 ∷ ∀ eff o a1 a2 a3 a4 a5 a6 b. EffFn7 eff o a1 a2 a3 a4 a5 a6 b
-foreign import _newEff7 ∷ ∀ eff o a1 a2 a3 a4 a5 a6 a7 b. EffFn8 eff o a1 a2 a3 a4 a5 a6 a7 b
+foreign import _newEffect0 ∷ ∀ o b. EffectFn1 o b
+foreign import _newEffect1 ∷ ∀ o a1 b. EffectFn2 o a1 b
+foreign import _newEffect2 ∷ ∀ o a1 a2 b. EffectFn3 o a1 a2 b
+foreign import _newEffect3 ∷ ∀ o a1 a2 a3 b. EffectFn4 o a1 a2 a3 b
+foreign import _newEffect4 ∷ ∀ o a1 a2 a3 a4 b. EffectFn5 o a1 a2 a3 a4 b
+foreign import _newEffect5 ∷ ∀ o a1 a2 a3 a4 a5 b. EffectFn6 o a1 a2 a3 a4 a5 b
+foreign import _newEffect6 ∷ ∀ o a1 a2 a3 a4 a5 a6 b. EffectFn7 o a1 a2 a3 a4 a5 a6 b
+foreign import _newEffect7 ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 b. EffectFn8 o a1 a2 a3 a4 a5 a6 a7 b
 
-newEff0 ∷ ∀ o eff b. o → Eff eff b
-newEff0 = runEffFn1 _newEff0
+newEffect0 ∷ ∀ o b. o → Effect b
+newEffect0 = runEffectFn1 _newEffect0
 
-newEff1 ∷ ∀ o a1 eff b. o → a1 → Eff eff b
-newEff1 = runEffFn2 _newEff1
+newEffect1 ∷ ∀ o a1 b. o → a1 → Effect b
+newEffect1 = runEffectFn2 _newEffect1
 
-newEff2 ∷ ∀ o a1 a2 eff b. o → a1 → a2 → Eff eff b
-newEff2 = runEffFn3 _newEff2
+newEffect2 ∷ ∀ o a1 a2 b. o → a1 → a2 → Effect b
+newEffect2 = runEffectFn3 _newEffect2
 
-newEff3 ∷ ∀ o a1 a2 a3 eff b. o → a1 → a2 → a3 → Eff eff b
-newEff3 = runEffFn4 _newEff3
+newEffect3 ∷ ∀ o a1 a2 a3 b. o → a1 → a2 → a3 → Effect b
+newEffect3 = runEffectFn4 _newEffect3
 
-newEff4 ∷ ∀ o a1 a2 a3 a4 eff b. o → a1 → a2 → a3 → a4 → Eff eff b
-newEff4 = runEffFn5 _newEff4
+newEffect4 ∷ ∀ o a1 a2 a3 a4 b. o → a1 → a2 → a3 → a4 → Effect b
+newEffect4 = runEffectFn5 _newEffect4
 
-newEff5 ∷ ∀ o a1 a2 a3 a4 a5 eff b. o → a1 → a2 → a3 → a4 → a5 → Eff eff b
-newEff5 = runEffFn6 _newEff5
+newEffect5 ∷ ∀ o a1 a2 a3 a4 a5 b. o → a1 → a2 → a3 → a4 → a5 → Effect b
+newEffect5 = runEffectFn6 _newEffect5
 
-newEff6 ∷ ∀ o a1 a2 a3 a4 a5 a6 eff b. o → a1 → a2 → a3 → a4 → a5 → a6 → Eff eff b
-newEff6 = runEffFn7 _newEff6
+newEffect6 ∷ ∀ o a1 a2 a3 a4 a5 a6 b. o → a1 → a2 → a3 → a4 → a5 → a6 → Effect b
+newEffect6 = runEffectFn7 _newEffect6
 
-newEff7 ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 eff b. o → a1 → a2 → a3 → a4 → a5 → a6 → a7 → Eff eff b
-newEff7 = runEffFn8 _newEff7
+newEffect7 ∷ ∀ o a1 a2 a3 a4 a5 a6 a7 b. o → a1 → a2 → a3 → a4 → a5 → a6 → a7 → Effect b
+newEffect7 = runEffectFn8 _newEffect7

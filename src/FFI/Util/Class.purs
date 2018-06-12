@@ -5,7 +5,7 @@ module FFI.Util.Class
   , untag
   ) where
 
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 
 
 class Taggable a where

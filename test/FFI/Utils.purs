@@ -1,46 +1,39 @@
-module Test.FFI.Utils (TestEffects, Buffer, FS, BUFFER, main) where
+module Test.FFI.Utils (Buffer, main) where
 
 import Prelude
 
 import Control.Alt ((<|>))
 import Control.Coroutine (Consumer, Producer, Process, ($$), runProcess, await)
 import Control.Coroutine.Aff (produce)
-import Control.Monad.Aff (Aff, liftEff')
-import Control.Monad.Aff.AVar (AVAR)
-import Control.Monad.Eff (Eff, kind Effect)
-import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Unsafe (unsafePerformEff)
+import Effect.Aff (Aff, liftEffect')
+import Effect (Effect)
+import Effect.Class (liftEffect)
+import Effect.Unsafe (unsafePerformEffect)
 import Control.Monad.Except (runExcept)
 import Control.Monad.Rec.Class (forever)
 import Control.Monad.ST (ST, STRef, modifySTRef, newSTRef, readSTRef)
 import Data.Either (Either(..))
-import Data.Foreign (F, Foreign, ForeignError, toForeign, unsafeFromForeign)
+import Foreign (F, Foreign, ForeignError, toForeign, unsafeFromForeign)
 import Data.Foreign.Class (class Decode, decode)
 import Data.List.Types (NonEmptyList)
 import Data.Maybe (Maybe(..))
 import FFI.Util (parseOptions, require, stringify, typeof, instanceof, property', property, propertyPath, setProperty, global)
 import FFI.Util.Class (class Taggable, class Untaggable, tag, untag)
-import FFI.Util.Function (callAff2r1, callEff0, callEff1, listenToEff0, listenToEff1)
-import Node.Process (PROCESS, cwd)
+import FFI.Util.Function (callAff2r1, callEffect0, callEffect1, listenToEffect0, listenToEffect1)
+import Node.Process (cwd)
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (RunnerEffects, run)
+import Test.Spec.Runner (run)
 
 
 
 -- | Define some data types for the FFI libraries
 foreign import data FileSystemM ∷ Type
 foreign import data Stream ∷ Type
-foreign import data FS ∷ Effect   -- To keep track of file system side effects
 
 foreign import data BufferM ∷ Type
 foreign import data Buffer ∷ Type
-foreign import data BUFFER ∷ Effect  -- To keep track of buffer side effects
-
-type BufferEffects e = (err ∷ EXCEPTION, buffer ∷ BUFFER | e)
 
 -- | require() modules directly and easily
 -- | As a convention, module data types are suffixed with M
@@ -48,11 +41,11 @@ fs ∷ FileSystemM
 fs = require "fs"
 
 -- | From the 'fs' module:
-readFile ∷ ∀ e. String → Aff (fs ∷ FS | e) String
+readFile ∷ String → Aff String
 readFile file = callAff2r1 fs "readFile" file "utf8"
 
-createReadStream ∷ ∀ e. String → Eff (err ∷ EXCEPTION, fs ∷ FS | e) Stream
-createReadStream file = callEff1 fs "createReadStream" file
+createReadStream ∷ String → Effect Stream
+createReadStream file = callEffect1 fs "createReadStream" file
 
 
 -- | These are some helper classes to conveniently tag and untag tagged sums
@@ -101,23 +94,23 @@ data StreamEvent = Readable | Data Buffer | End
 
 -- | Coroutines are useful for streams that emit chunks of data before closing,
 -- | such as the Stream returned by createReadStream
-streamProducer ∷ ∀ e. Stream → Producer StreamEvent (Aff (avar ∷ AVAR, st ∷ ST Buffer | e)) Unit
+streamProducer ∷ Stream → Producer StreamEvent Aff Unit
 streamProducer stream = produce \emit → do
-  listenToEff0 stream "on" "readable" \_ → emit (Left Readable)
-  listenToEff1 stream "on" "data"     \(d ∷ Buffer) → emit (Left $ Data d)
-  listenToEff0 stream "on" "end"      \_ → do
+  listenToEffect0 stream "on" "readable" \_ → emit (Left Readable)
+  listenToEffect1 stream "on" "data"     \(d ∷ Buffer) → emit (Left $ Data d)
+  listenToEffect0 stream "on" "end"      \_ → do
     emit (Left End)
     emit (Right unit)
 
-streamConsumer ∷ ∀ e. StreamRef → Consumer StreamEvent (Aff (st ∷ ST Buffer | e)) Unit
+streamConsumer ∷ StreamRef → Consumer StreamEvent Aff Unit
 streamConsumer ref = forever do
   e ← await
-  liftEff $ case e of
+  liftEffect $ case e of
     Readable → pure unit
     Data buf → (pure unit) <* modifySTRef ref (_ <> [buf])
     End      → pure unit
 
-streamProcess ∷ ∀ e. Stream → StreamRef → Process (Aff (console ∷ CONSOLE, avar ∷ AVAR, st ∷ ST Buffer | e)) Unit
+streamProcess ∷ Stream → StreamRef → Process Aff Unit
 streamProcess stream ref = (streamProducer stream) $$ (streamConsumer ref)
 
 decodePrimitive ∷ ∀ a. Decode a ⇒ Foreign → Either (NonEmptyList ForeignError) a
@@ -126,14 +119,8 @@ decodePrimitive = runExcept <<< decode
 untagTag ∷ ∀ a. Taggable a ⇒ Untaggable a ⇒ a → a
 untagTag = tag <<< untag
 
-type TestEffects e =
-  ( fs ∷ FS, console ∷ CONSOLE, avar ∷ AVAR, buffer ∷ BUFFER
-  , err ∷ EXCEPTION, process ∷ PROCESS, st ∷ ST Buffer
-  | e
-  )
 
-
-main ∷ ∀ e. Eff (RunnerEffects (TestEffects e)) Unit
+main ∷ Effect Unit
 main = run [consoleReporter] do
   describe "purescript-ffi-utils" do
     describe "parseOptions" do
@@ -178,35 +165,35 @@ main = run [consoleReporter] do
         [1,2,3] `instanceof` (property' "Array") `shouldEqual` true
 
 
-    describe "callEff*" do
+    describe "callEffect*" do
       it "should call the corresponding FFI functions with the given args" do
         let bufferM = (require "buffer") ∷ BufferM
-        let toBuffer (string ∷ String) = (callEff1 bufferM "Buffer" string)
-                                       ∷ ∀ eff. Eff (BufferEffects eff) Buffer
-        let toString (buffer ∷ Buffer) = (callEff0 buffer "toString")
-                                       ∷ ∀ eff. Eff (BufferEffects eff) String
+        let toBuffer (string ∷ String) = (callEffect1 bufferM "Buffer" string)
+                                       ∷ Effect Buffer
+        let toString (buffer ∷ Buffer) = (callEffect0 buffer "toString")
+                                       ∷ Effect String
 
-        foo ← liftEff $ toBuffer "foobar"
+        foo ← liftEffect $ toBuffer "foobar"
         foo `instanceof` (property bufferM "Buffer") `shouldEqual` true
-        foo' ← liftEff $ toString foo
+        foo' ← liftEffect $ toString foo
         foo' `shouldEqual` "foobar"
 
 
     describe "callAff*" do
       it "should call the corresponding FFI async function returning Aff" do
         let bufferM = (require "buffer") ∷ BufferM
-        let concat (buffers ∷ Array Buffer) = (callEff1 (property bufferM "Buffer") "concat" buffers)
-                                            ∷ ∀ eff. Eff (BufferEffects eff) Buffer
-        let toString (buffer ∷ Buffer) = (callEff0 buffer "toString")
-                                       ∷ ∀ eff. Eff (BufferEffects eff) String
-        let bowerFile = unsafePerformEff $ (_ <> "/bower.json") <$> cwd
+        let concat (buffers ∷ Array Buffer) = (callEffect1 (property bufferM "Buffer") "concat" buffers)
+                                            ∷ Effect Buffer
+        let toString (buffer ∷ Buffer) = (callEffect0 buffer "toString")
+                                       ∷ Effect String
+        let bowerFile = unsafePerformEffect $ (_ <> "/bower.json") <$> cwd
 
         -- | Launch the stream coroutine
-        ref ← liftEff $ newSTRef []
-        stream ← liftEff' $ createReadStream bowerFile
+        ref ← liftEffect $ newSTRef []
+        stream ← liftEffect' $ createReadStream bowerFile
         runProcess (streamProcess stream ref)
 
-        expected ← liftEff $ (toString <=< concat <=< readSTRef) ref
+        expected ← liftEffect $ (toString <=< concat <=< readSTRef) ref
         actual ← readFile bowerFile
 
         expected `shouldEqual` (actual <> "")
