@@ -7,7 +7,7 @@
     "test-strict": "pulp build -I test -- --censor-lib --strict --stash && pulp test"
   },
   "devDependencies": {
-    "pulp": "^12.0.1",
+    "pulp": "^12.2.0",
     "purescript-psa": "^0.5.1",
     "rimraf": "^2.5.0"
   }
